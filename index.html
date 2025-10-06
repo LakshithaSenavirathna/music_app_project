@@ -1,0 +1,1218 @@
+// Music Stream React SPA
+const { useState, useEffect, useContext, createContext, useRef } = React;
+
+// Initial app data
+const initialAppData = {
+  "songs": [
+    {
+      "id": 1,
+      "title": "Starlight Echoes",
+      "artist": "The Cosmic Keys",
+      "album": "Cosmic Collection",
+      "duration": "3:45",
+      "audio_url": "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
+    },
+    {
+      "id": 2,
+      "title": "Neon Dreams",
+      "artist": "Synthwave Surfers",
+      "album": "Retro Future",
+      "duration": "4:12",
+      "audio_url": "https://sample-videos.com/zip/10/mp3/SampleAudio_0.4mb_mp3.mp3"
+    },
+    {
+      "id": 3,
+      "title": "Acoustic Soul",
+      "artist": "Luna Bloom",
+      "album": "Moonlight Sessions",
+      "duration": "3:28",
+      "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav"
+    },
+    {
+      "id": 4,
+      "title": "Ho Hey",
+      "artist": "The Lumineers",
+      "album": "The Lumineers",
+      "duration": "2:43",
+      "audio_url": "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
+    },
+    {
+      "id": 5,
+      "title": "Little Talks",
+      "artist": "Of Monsters and Men",
+      "album": "My Head Is an Animal",
+      "duration": "4:03",
+      "audio_url": "https://sample-videos.com/zip/10/mp3/SampleAudio_0.4mb_mp3.mp3"
+    },
+    {
+      "id": 6,
+      "title": "I Will Wait",
+      "artist": "Mumford & Sons",
+      "album": "Babel",
+      "duration": "4:36",
+      "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav"
+    },
+    {
+      "id": 7,
+      "title": "Rivers and Roads",
+      "artist": "The Head and the Heart",
+      "album": "The Head and the Heart",
+      "duration": "4:18",
+      "audio_url": "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
+    },
+    {
+      "id": 8,
+      "title": "The Night We Met",
+      "artist": "Lord Huron",
+      "album": "Strange Trails",
+      "duration": "3:28",
+      "audio_url": "https://sample-videos.com/zip/10/mp3/SampleAudio_0.4mb_mp3.mp3"
+    },
+    {
+      "id": 9,
+      "title": "Helplessness Blues",
+      "artist": "Fleet Foxes",
+      "album": "Helplessness Blues",
+      "duration": "5:03",
+      "audio_url": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav"
+    },
+    {
+      "id": 10,
+      "title": "Skinny Love",
+      "artist": "Bon Iver",
+      "album": "For Emma, Forever Ago",
+      "duration": "3:58",
+      "audio_url": "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
+    }
+  ],
+  "playlists": [
+    {
+      "id": 1,
+      "name": "Acoustic Chill",
+      "creator": "Ethan Blake",
+      "songs": [1, 3, 4, 7, 8, 9, 10],
+      "description": "Perfect acoustic tracks for relaxation"
+    },
+    {
+      "id": 2,
+      "name": "Wanderlust Tracks",
+      "creator": "Olivia Carter",
+      "songs": [2, 4, 5, 6, 7],
+      "description": "Music for your next adventure"
+    },
+    {
+      "id": 3,
+      "name": "Cozy Country",
+      "creator": "Caleb Stone",
+      "songs": [4, 6, 7, 8],
+      "description": "Country vibes for cozy evenings"
+    },
+    {
+      "id": 4,
+      "name": "Road Trip Anthems",
+      "creator": "Various Artists",
+      "songs": [2, 4, 5, 6],
+      "description": "Essential road trip playlist"
+    },
+    {
+      "id": 5,
+      "name": "Chill Vibes",
+      "creator": "User",
+      "songs": [1, 3, 9, 10],
+      "description": "10 songs"
+    },
+    {
+      "id": 6,
+      "name": "Workout Mix",
+      "creator": "User",
+      "songs": [2, 5, 6],
+      "description": "25 songs"
+    }
+  ],
+  "artists": [
+    {
+      "id": 1,
+      "name": "The Lumineers",
+      "genre": "Indie Folk",
+      "followers": 2500000
+    },
+    {
+      "id": 2,
+      "name": "Coldplay",
+      "genre": "Alternative Rock",
+      "followers": 15000000
+    },
+    {
+      "id": 3,
+      "name": "Taylor Swift",
+      "genre": "Pop",
+      "followers": 25000000
+    },
+    {
+      "id": 4,
+      "name": "Ed Sheeran",
+      "genre": "Pop",
+      "followers": 20000000
+    },
+    {
+      "id": 5,
+      "name": "The Cosmic Keys",
+      "genre": "Electronic",
+      "followers": 50000
+    }
+  ],
+  "genres": [
+    "Pop", "Hip Hop", "Rock", "Electronic", "R&B", "Indie", 
+    "Classical", "Jazz", "Country", "Metal"
+  ],
+  "user": {
+    "id": 1,
+    "name": "Liam Carter",
+    "username": "@liamcarter",
+    "email": "liam@musicstream.com",
+    "premium": false,
+    "likedSongs": [1, 3, 4, 7, 8, 9],
+    "recentlyPlayed": [1, 2, 3],
+    "followedArtists": [1, 2, 3, 4]
+  }
+};
+
+// App Context
+const AppContext = createContext();
+
+// Utility functions
+const formatTime = (time) => {
+  if (!time || isNaN(time)) return '0:00';
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
+
+const saveToLocalStorage = (key, data) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.error('Error saving to localStorage:', error);
+  }
+};
+
+const getFromLocalStorage = (key, defaultValue) => {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : defaultValue;
+  } catch (error) {
+    console.error('Error reading from localStorage:', error);
+    return defaultValue;
+  }
+};
+
+// App Provider
+const AppProvider = ({ children }) => {
+  const [currentScreen, setCurrentScreen] = useState('home');
+  const [songs] = useState(initialAppData.songs);
+  const [playlists, setPlaylists] = useState(() => getFromLocalStorage('playlists', initialAppData.playlists));
+  const [artists] = useState(initialAppData.artists);
+  const [genres] = useState(initialAppData.genres);
+  const [user, setUser] = useState(() => getFromLocalStorage('user', initialAppData.user));
+  const [settings, setSettings] = useState(() => getFromLocalStorage('settings', {
+    audioQuality: 'high',
+    notifications: true,
+    dataUsage: 'normal',
+    theme: 'dark'
+  }));
+  
+  // Audio player state
+  const [currentSong, setCurrentSong] = useState(() => getFromLocalStorage('currentSong', null));
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(() => getFromLocalStorage('volume', 1));
+  const [queue, setQueue] = useState(() => getFromLocalStorage('queue', []));
+  const [currentPlaylist, setCurrentPlaylist] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState('All');
+  const [libraryTab, setLibraryTab] = useState('playlists');
+  const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+
+  const audioRef = useRef(null);
+
+  // Save to localStorage when state changes
+  useEffect(() => {
+    saveToLocalStorage('playlists', playlists);
+  }, [playlists]);
+
+  useEffect(() => {
+    saveToLocalStorage('user', user);
+  }, [user]);
+
+  useEffect(() => {
+    saveToLocalStorage('settings', settings);
+  }, [settings]);
+
+  useEffect(() => {
+    saveToLocalStorage('currentSong', currentSong);
+  }, [currentSong]);
+
+  useEffect(() => {
+    saveToLocalStorage('volume', volume);
+  }, [volume]);
+
+  useEffect(() => {
+    saveToLocalStorage('queue', queue);
+  }, [queue]);
+
+  // Audio player functions
+  const playSong = (song, playlistSongs = null) => {
+    setCurrentSong(song);
+    if (playlistSongs) {
+      setQueue(playlistSongs);
+    }
+    if (audioRef.current) {
+      audioRef.current.src = song.audio_url;
+      audioRef.current.play().catch(console.error);
+    }
+    
+    // Add to recently played
+    const newRecentlyPlayed = [song.id, ...user.recentlyPlayed.filter(id => id !== song.id)].slice(0, 10);
+    setUser(prev => ({ ...prev, recentlyPlayed: newRecentlyPlayed }));
+  };
+
+  const togglePlay = () => {
+    if (!audioRef.current || !currentSong) return;
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(console.error);
+    }
+  };
+
+  const playNext = () => {
+    if (!currentSong || queue.length === 0) return;
+    
+    const currentIndex = queue.findIndex(song => song.id === currentSong.id);
+    const nextIndex = (currentIndex + 1) % queue.length;
+    playSong(queue[nextIndex], queue);
+  };
+
+  const playPrevious = () => {
+    if (!currentSong || queue.length === 0) return;
+    
+    const currentIndex = queue.findIndex(song => song.id === currentSong.id);
+    const prevIndex = currentIndex === 0 ? queue.length - 1 : currentIndex - 1;
+    playSong(queue[prevIndex], queue);
+  };
+
+  const seekTo = (time) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
+  // Playlist functions
+  const createPlaylist = (name, description) => {
+    const newPlaylist = {
+      id: Date.now(),
+      name,
+      creator: 'User',
+      songs: [],
+      description
+    };
+    setPlaylists(prev => [...prev, newPlaylist]);
+  };
+
+  const deletePlaylist = (playlistId) => {
+    setPlaylists(prev => prev.filter(p => p.id !== playlistId));
+  };
+
+  const addSongToPlaylist = (playlistId, songId) => {
+    setPlaylists(prev => prev.map(playlist => 
+      playlist.id === playlistId 
+        ? { ...playlist, songs: [...playlist.songs, songId] }
+        : playlist
+    ));
+  };
+
+  const removeSongFromPlaylist = (playlistId, songId) => {
+    setPlaylists(prev => prev.map(playlist => 
+      playlist.id === playlistId 
+        ? { ...playlist, songs: playlist.songs.filter(id => id !== songId) }
+        : playlist
+    ));
+  };
+
+  const toggleLikeSong = (songId) => {
+    setUser(prev => ({
+      ...prev,
+      likedSongs: prev.likedSongs.includes(songId)
+        ? prev.likedSongs.filter(id => id !== songId)
+        : [...prev.likedSongs, songId]
+    }));
+  };
+
+  const updateSettings = (newSettings) => {
+    setSettings(prev => ({ ...prev, ...newSettings }));
+  };
+
+  const value = {
+    // Screen navigation
+    currentScreen,
+    setCurrentScreen,
+    
+    // Data
+    songs,
+    playlists,
+    artists,
+    genres,
+    user,
+    settings,
+    
+    // Audio player
+    currentSong,
+    isPlaying,
+    currentTime,
+    duration,
+    volume,
+    queue,
+    currentPlaylist,
+    audioRef,
+    playSong,
+    togglePlay,
+    playNext,
+    playPrevious,
+    seekTo,
+    setVolume,
+    setCurrentPlaylist,
+    
+    // UI state
+    searchQuery,
+    setSearchQuery,
+    selectedGenre,
+    setSelectedGenre,
+    libraryTab,
+    setLibraryTab,
+    showCreatePlaylist,
+    setShowCreatePlaylist,
+    showSettings,
+    setShowSettings,
+    selectedPlaylist,
+    setSelectedPlaylist,
+    
+    // Functions
+    createPlaylist,
+    deletePlaylist,
+    addSongToPlaylist,
+    removeSongFromPlaylist,
+    toggleLikeSong,
+    updateSettings,
+    setIsPlaying,
+    setCurrentTime,
+    setDuration
+  };
+
+  return (
+    <AppContext.Provider value={value}>
+      {children}
+      <audio
+        ref={audioRef}
+        onTimeUpdate={(e) => setCurrentTime(e.target.currentTime)}
+        onLoadedMetadata={(e) => setDuration(e.target.duration)}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={playNext}
+        volume={volume}
+      />
+    </AppContext.Provider>
+  );
+};
+
+// Components
+const SongItem = ({ song, showDuration = true, playlist = null }) => {
+  const { 
+    currentSong, 
+    isPlaying, 
+    playSong, 
+    user, 
+    toggleLikeSong, 
+    songs,
+    removeSongFromPlaylist 
+  } = useContext(AppContext);
+  
+  const isCurrentSong = currentSong?.id === song.id;
+  const isLiked = user.likedSongs.includes(song.id);
+
+  const handlePlay = () => {
+    if (playlist) {
+      const playlistSongs = playlist.songs.map(songId => songs.find(s => s.id === songId)).filter(Boolean);
+      playSong(song, playlistSongs);
+    } else {
+      playSong(song);
+    }
+  };
+
+  const handleRemoveFromPlaylist = (e) => {
+    e.stopPropagation();
+    if (playlist && playlist.creator === 'User') {
+      removeSongFromPlaylist(playlist.id, song.id);
+    }
+  };
+
+  return (
+    <div 
+      className={`song-item ${isCurrentSong ? 'song-item--playing' : ''}`}
+      onClick={handlePlay}
+    >
+      <div className="song-item__artwork">
+        {isCurrentSong && isPlaying ? 'â¸' : 'ðŸŽµ'}
+      </div>
+      <div className="song-item__info">
+        <p className="song-item__title">{song.title}</p>
+        <p className="song-item__artist">{song.artist}</p>
+      </div>
+      <div className="song-item__actions">
+        <button
+          className={`song-item__like ${isLiked ? 'song-item__like--liked' : ''}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleLikeSong(song.id);
+          }}
+        >
+          {isLiked ? 'â¤ï¸' : 'ðŸ¤'}
+        </button>
+        {playlist && playlist.creator === 'User' && (
+          <button
+            className="song-item__like"
+            onClick={handleRemoveFromPlaylist}
+            title="Remove from playlist"
+          >
+            âœ•
+          </button>
+        )}
+      </div>
+      {showDuration && (
+        <span className="song-item__duration">{song.duration}</span>
+      )}
+    </div>
+  );
+};
+
+const PlaylistCard = ({ playlist }) => {
+  const { setCurrentScreen, setSelectedPlaylist } = useContext(AppContext);
+
+  const handleClick = () => {
+    setSelectedPlaylist(playlist);
+    setCurrentScreen('playlist');
+  };
+
+  return (
+    <div className="playlist-card" onClick={handleClick}>
+      <div className="playlist-card__artwork">ðŸŽµ</div>
+      <p className="playlist-card__name">{playlist.name}</p>
+      <p className="playlist-card__creator">{playlist.creator}</p>
+    </div>
+  );
+};
+
+const AudioPlayer = () => {
+  const { currentSong, isPlaying, togglePlay, setCurrentScreen } = useContext(AppContext);
+
+  if (!currentSong) return null;
+
+  const handleClick = () => {
+    setCurrentScreen('nowplaying');
+  };
+
+  return (
+    <div className="audio-player" onClick={handleClick}>
+      <div className="audio-player__info">
+        <p className="audio-player__title">{currentSong.title}</p>
+        <p className="audio-player__artist">{currentSong.artist}</p>
+      </div>
+      <div className="audio-player__controls">
+        <button 
+          className="audio-player__control audio-player__control--play"
+          onClick={(e) => {
+            e.stopPropagation();
+            togglePlay();
+          }}
+        >
+          {isPlaying ? 'â¸' : 'â–¶'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const BottomNav = () => {
+  const { currentScreen, setCurrentScreen } = useContext(AppContext);
+
+  const navItems = [
+    { id: 'home', label: 'Home', icon: 'ðŸ ' },
+    { id: 'search', label: 'Search', icon: 'ðŸ”' },
+    { id: 'library', label: 'Library', icon: 'ðŸ“š' },
+    { id: 'profile', label: 'Profile', icon: 'ðŸ‘¤' }
+  ];
+
+  return (
+    <nav className="bottom-nav">
+      {navItems.map(item => (
+        <button
+          key={item.id}
+          className={`nav-item ${currentScreen === item.id ? 'nav-item--active' : ''}`}
+          onClick={() => setCurrentScreen(item.id)}
+        >
+          <span className="nav-item__icon">{item.icon}</span>
+          <span>{item.label}</span>
+        </button>
+      ))}
+    </nav>
+  );
+};
+
+const HomeScreen = () => {
+  const { playlists, songs, user } = useContext(AppContext);
+  
+  const recentlyPlayedSongs = user.recentlyPlayed.map(id => songs.find(s => s.id === id)).filter(Boolean);
+  const featuredPlaylists = playlists.slice(0, 4);
+
+  return (
+    <div className="screen">
+      <div className="header">
+        <h1 className="header__title">Good evening</h1>
+      </div>
+
+      {recentlyPlayedSongs.length > 0 && (
+        <>
+          <div className="section-header">
+            <h2 className="section-title">Recently Played</h2>
+          </div>
+          {recentlyPlayedSongs.slice(0, 3).map(song => (
+            <SongItem key={song.id} song={song} />
+          ))}
+        </>
+      )}
+
+      <div className="section-header">
+        <h2 className="section-title">Featured Playlists</h2>
+      </div>
+      <div className="playlist-grid">
+        {featuredPlaylists.map(playlist => (
+          <PlaylistCard key={playlist.id} playlist={playlist} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SearchScreen = () => {
+  const { 
+    songs, 
+    artists, 
+    genres, 
+    searchQuery, 
+    setSearchQuery, 
+    selectedGenre, 
+    setSelectedGenre 
+  } = useContext(AppContext);
+
+  const filteredSongs = songs.filter(song => {
+    const matchesQuery = !searchQuery || 
+      song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.album.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesGenre = selectedGenre === 'All' || 
+      artists.find(a => a.name === song.artist)?.genre === selectedGenre;
+
+    return matchesQuery && matchesGenre;
+  });
+
+  return (
+    <div className="screen">
+      <div className="header">
+        <h1 className="header__title">Search</h1>
+      </div>
+
+      <div className="search-container">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search songs, artists, albums..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        
+        <div className="search-filters">
+          <button
+            className={`filter-chip ${selectedGenre === 'All' ? 'filter-chip--active' : ''}`}
+            onClick={() => setSelectedGenre('All')}
+          >
+            All
+          </button>
+          {genres.map(genre => (
+            <button
+              key={genre}
+              className={`filter-chip ${selectedGenre === genre ? 'filter-chip--active' : ''}`}
+              onClick={() => setSelectedGenre(genre)}
+            >
+              {genre}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {searchQuery || selectedGenre !== 'All' ? (
+        <div>
+          <p className="section-title">Results ({filteredSongs.length})</p>
+          {filteredSongs.map(song => (
+            <SongItem key={song.id} song={song} />
+          ))}
+          {filteredSongs.length === 0 && (
+            <div className="empty-state">
+              <div className="empty-state__icon">ðŸ”</div>
+              <p className="empty-state__message">No songs found</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div>
+          <h2 className="section-title">Browse All</h2>
+          {songs.slice(0, 10).map(song => (
+            <SongItem key={song.id} song={song} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const LibraryScreen = () => {
+  const { 
+    playlists, 
+    songs, 
+    artists, 
+    user, 
+    libraryTab, 
+    setLibraryTab, 
+    setShowCreatePlaylist 
+  } = useContext(AppContext);
+
+  const likedSongs = user.likedSongs.map(id => songs.find(s => s.id === id)).filter(Boolean);
+  const followedArtists = user.followedArtists.map(id => artists.find(a => a.id === id)).filter(Boolean);
+
+  const tabs = [
+    { id: 'playlists', label: 'Playlists', count: playlists.length },
+    { id: 'artists', label: 'Artists', count: followedArtists.length },
+    { id: 'liked', label: 'Liked', count: likedSongs.length }
+  ];
+
+  return (
+    <div className="screen">
+      <div className="header">
+        <h1 className="header__title">Your Library</h1>
+        {libraryTab === 'playlists' && (
+          <button 
+            className="btn btn--outline btn--sm"
+            onClick={() => setShowCreatePlaylist(true)}
+          >
+            Create
+          </button>
+        )}
+      </div>
+
+      <div className="library-tabs">
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            className={`library-tab ${libraryTab === tab.id ? 'library-tab--active' : ''}`}
+            onClick={() => setLibraryTab(tab.id)}
+          >
+            {tab.label} ({tab.count})
+          </button>
+        ))}
+      </div>
+
+      {libraryTab === 'playlists' && (
+        <div>
+          {playlists.length > 0 ? (
+            <div className="playlist-grid">
+              {playlists.map(playlist => (
+                <PlaylistCard key={playlist.id} playlist={playlist} />
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <div className="empty-state__icon">ðŸŽµ</div>
+              <p className="empty-state__message">No playlists yet</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {libraryTab === 'artists' && (
+        <div>
+          {followedArtists.length > 0 ? (
+            followedArtists.map(artist => (
+              <div key={artist.id} className="song-item">
+                <div className="song-item__artwork">ðŸ‘¤</div>
+                <div className="song-item__info">
+                  <p className="song-item__title">{artist.name}</p>
+                  <p className="song-item__artist">{artist.genre} â€¢ {artist.followers.toLocaleString()} followers</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="empty-state">
+              <div className="empty-state__icon">ðŸ‘¤</div>
+              <p className="empty-state__message">No artists followed</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {libraryTab === 'liked' && (
+        <div>
+          {likedSongs.length > 0 ? (
+            likedSongs.map(song => (
+              <SongItem key={song.id} song={song} />
+            ))
+          ) : (
+            <div className="empty-state">
+              <div className="empty-state__icon">â¤ï¸</div>
+              <p className="empty-state__message">No liked songs</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ProfileScreen = () => {
+  const { user, setShowSettings } = useContext(AppContext);
+
+  return (
+    <div className="screen">
+      <div className="profile-header">
+        <div className="profile-avatar">
+          {user.name.charAt(0).toUpperCase()}
+        </div>
+        <h1 className="profile-name">{user.name}</h1>
+        <p className="profile-username">{user.username}</p>
+      </div>
+
+      <div className="card">
+        <div className="card__body">
+          <div className="settings-item" onClick={() => setShowSettings(true)} style={{cursor: 'pointer'}}>
+            <div>
+              <div className="settings-item__label">Settings</div>
+              <div className="settings-item__description">Audio, notifications, and more</div>
+            </div>
+            <span>â€º</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="card mt-16">
+        <div className="card__body">
+          <div className="settings-item">
+            <div>
+              <div className="settings-item__label">Account Type</div>
+              <div className="settings-item__description">{user.premium ? 'Premium' : 'Free'}</div>
+            </div>
+          </div>
+          <div className="settings-item">
+            <div>
+              <div className="settings-item__label">Email</div>
+              <div className="settings-item__description">{user.email}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const NowPlayingScreen = () => {
+  const { 
+    currentSong, 
+    isPlaying, 
+    currentTime, 
+    duration, 
+    togglePlay, 
+    playNext, 
+    playPrevious, 
+    seekTo,
+    user,
+    toggleLikeSong,
+    setCurrentScreen 
+  } = useContext(AppContext);
+
+  if (!currentSong) {
+    return (
+      <div className="screen screen--full">
+        <div className="header">
+          <button className="header__back" onClick={() => setCurrentScreen('home')}>
+            â†
+          </button>
+          <h1 className="header__title">Now Playing</h1>
+        </div>
+        <div className="empty-state">
+          <div className="empty-state__icon">ðŸŽµ</div>
+          <p className="empty-state__message">No song playing</p>
+        </div>
+      </div>
+    );
+  }
+
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const isLiked = user.likedSongs.includes(currentSong.id);
+
+  const handleProgressClick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    const newTime = percent * duration;
+    seekTo(newTime);
+  };
+
+  return (
+    <div className="now-playing screen--full">
+      <div className="header">
+        <button className="header__back" onClick={() => setCurrentScreen('home')}>
+          â†
+        </button>
+        <h1 className="header__title">Now Playing</h1>
+        <button
+          className={`header__back ${isLiked ? 'song-item__like--liked' : ''}`}
+          onClick={() => toggleLikeSong(currentSong.id)}
+        >
+          {isLiked ? 'â¤ï¸' : 'ðŸ¤'}
+        </button>
+      </div>
+
+      <div className="now-playing__artwork">
+        ðŸŽµ
+      </div>
+
+      <div className="now-playing__info">
+        <h2 className="now-playing__title">{currentSong.title}</h2>
+        <p className="now-playing__artist">{currentSong.artist}</p>
+      </div>
+
+      <div className="now-playing__progress">
+        <div className="progress-times">
+          <span>{formatTime(currentTime)}</span>
+          <span>{formatTime(duration)}</span>
+        </div>
+        <div className="progress-bar" onClick={handleProgressClick}>
+          <div 
+            className="progress-bar__fill" 
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="now-playing__controls">
+        <button className="now-playing__control" onClick={playPrevious}>
+          â®
+        </button>
+        <button 
+          className="now-playing__control now-playing__control--play"
+          onClick={togglePlay}
+        >
+          {isPlaying ? 'â¸' : 'â–¶'}
+        </button>
+        <button className="now-playing__control" onClick={playNext}>
+          â­
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const PlaylistScreen = () => {
+  const { 
+    selectedPlaylist, 
+    songs, 
+    playSong,
+    setCurrentScreen,
+    deletePlaylist 
+  } = useContext(AppContext);
+
+  if (!selectedPlaylist) {
+    return (
+      <div className="screen">
+        <div className="header">
+          <button className="header__back" onClick={() => setCurrentScreen('library')}>
+            â†
+          </button>
+          <h1 className="header__title">Playlist</h1>
+        </div>
+        <div className="empty-state">
+          <div className="empty-state__icon">ðŸŽµ</div>
+          <p className="empty-state__message">Playlist not found</p>
+        </div>
+      </div>
+    );
+  }
+
+  const playlistSongs = selectedPlaylist.songs.map(songId => songs.find(s => s.id === songId)).filter(Boolean);
+
+  const handlePlayAll = () => {
+    if (playlistSongs.length > 0) {
+      playSong(playlistSongs[0], playlistSongs);
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectedPlaylist.creator === 'User' && confirm('Delete this playlist?')) {
+      deletePlaylist(selectedPlaylist.id);
+      setCurrentScreen('library');
+    }
+  };
+
+  return (
+    <div className="screen">
+      <div className="header">
+        <button className="header__back" onClick={() => setCurrentScreen('library')}>
+          â†
+        </button>
+        <h1 className="header__title">Playlist</h1>
+        {selectedPlaylist.creator === 'User' && (
+          <button className="header__back" onClick={handleDelete} style={{ color: 'var(--color-error)' }}>
+            ðŸ—‘
+          </button>
+        )}
+      </div>
+
+      <div className="card mb-24">
+        <div className="card__body">
+          <h2>{selectedPlaylist.name}</h2>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-8)' }}>
+            By {selectedPlaylist.creator}
+          </p>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-16)' }}>
+            {selectedPlaylist.description}
+          </p>
+          <button className="btn btn--primary" onClick={handlePlayAll}>
+            â–¶ Play All
+          </button>
+        </div>
+      </div>
+
+      {playlistSongs.length > 0 ? (
+        playlistSongs.map(song => (
+          <SongItem key={song.id} song={song} playlist={selectedPlaylist} />
+        ))
+      ) : (
+        <div className="empty-state">
+          <div className="empty-state__icon">ðŸŽµ</div>
+          <p className="empty-state__message">This playlist is empty</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const CreatePlaylistModal = () => {
+  const { showCreatePlaylist, setShowCreatePlaylist, createPlaylist } = useContext(AppContext);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (name.trim()) {
+      createPlaylist(name.trim(), description.trim());
+      setName('');
+      setDescription('');
+      setShowCreatePlaylist(false);
+    }
+  };
+
+  const handleClose = () => {
+    setName('');
+    setDescription('');
+    setShowCreatePlaylist(false);
+  };
+
+  return (
+    <div className={`modal ${showCreatePlaylist ? '' : 'hidden'}`}>
+      <div className="modal__content">
+        <div className="modal__header">
+          <h2 className="modal__title">Create Playlist</h2>
+          <button className="modal__close" onClick={handleClose}>âœ•</button>
+        </div>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="My Playlist"
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label className="form-label">Description</label>
+            <textarea
+              className="form-control"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe your playlist..."
+              rows="3"
+            />
+          </div>
+          
+          <div className="flex gap-8">
+            <button type="button" className="btn btn--secondary flex-1" onClick={handleClose}>
+              Cancel
+            </button>
+            <button type="submit" className="btn btn--primary flex-1">
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const SettingsModal = () => {
+  const { showSettings, setShowSettings, settings, updateSettings } = useContext(AppContext);
+
+  const handleToggle = (key) => {
+    updateSettings({ [key]: !settings[key] });
+  };
+
+  const handleSelectChange = (key, value) => {
+    updateSettings({ [key]: value });
+  };
+
+  const handleClose = () => {
+    setShowSettings(false);
+  };
+
+  return (
+    <div className={`modal ${showSettings ? '' : 'hidden'}`}>
+      <div className="modal__content">
+        <div className="modal__header">
+          <h2 className="modal__title">Settings</h2>
+          <button className="modal__close" onClick={handleClose}>âœ•</button>
+        </div>
+        
+        <div className="settings-section">
+          <h3 className="settings-section__title">Audio</h3>
+          <div className="settings-item">
+            <div>
+              <div className="settings-item__label">Audio Quality</div>
+              <div className="settings-item__description">Higher quality uses more data</div>
+            </div>
+            <select
+              className="form-control"
+              value={settings.audioQuality}
+              onChange={(e) => handleSelectChange('audioQuality', e.target.value)}
+              style={{ width: 'auto', minWidth: '100px' }}
+            >
+              <option value="low">Low</option>
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="settings-section">
+          <h3 className="settings-section__title">Notifications</h3>
+          <div className="settings-item">
+            <div>
+              <div className="settings-item__label">Push Notifications</div>
+              <div className="settings-item__description">Get notified about new releases</div>
+            </div>
+            <div 
+              className={`toggle ${settings.notifications ? 'toggle--active' : ''}`}
+              onClick={() => handleToggle('notifications')}
+            >
+              <div className="toggle__thumb"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="settings-section">
+          <h3 className="settings-section__title">Data Usage</h3>
+          <div className="settings-item">
+            <div>
+              <div className="settings-item__label">Data Usage</div>
+              <div className="settings-item__description">Control how much data the app uses</div>
+            </div>
+            <select
+              className="form-control"
+              value={settings.dataUsage}
+              onChange={(e) => handleSelectChange('dataUsage', e.target.value)}
+              style={{ width: 'auto', minWidth: '100px' }}
+            >
+              <option value="low">Low</option>
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="mt-16">
+          <button className="btn btn--primary btn--full-width" onClick={handleClose}>
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const App = () => {
+  const { currentScreen } = useContext(AppContext);
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'home':
+        return <HomeScreen />;
+      case 'search':
+        return <SearchScreen />;
+      case 'library':
+        return <LibraryScreen />;
+      case 'profile':
+        return <ProfileScreen />;
+      case 'nowplaying':
+        return <NowPlayingScreen />;
+      case 'playlist':
+        return <PlaylistScreen />;
+      default:
+        return <HomeScreen />;
+    }
+  };
+
+  const showBottomNav = currentScreen !== 'nowplaying';
+
+  return (
+    <div className="app">
+      {renderScreen()}
+      {showBottomNav && <AudioPlayer />}
+      {showBottomNav && <BottomNav />}
+      <CreatePlaylistModal />
+      <SettingsModal />
+    </div>
+  );
+};
+
+const AppWithProvider = () => (
+  <AppProvider>
+    <App />
+  </AppProvider>
+);
+
+// Render the app
+ReactDOM.render(<AppWithProvider />, document.getElementById('root'));
