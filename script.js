@@ -3,7 +3,7 @@ const { useState, useEffect, useContext, createContext, useRef } = React;
 
 const initialAppData = {
     songs: [ { id: 1, title: "Starlight Echoes", artist: "The Cosmic Keys", album: "Cosmic Collection", duration: "3:45", audio_url: "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3", artwork: "https://images.unsplash.com/photo-1516223725307-6f76b9ec8742?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQyODJ8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 2, title: "Neon Dreams", artist: "Synthwave Surfers", album: "Retro Future", duration: "4:12", audio_url: "https://sample-videos.com/zip/10/mp3/SampleAudio_0.4mb_mp3.mp3", artwork: "https://images.unsplash.com/photo-1593902821204-5835b4528994?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQzMTB8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 3, title: "Acoustic Soul", artist: "Luna Bloom", album: "Moonlight Sessions", duration: "3:28", audio_url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav", artwork: "https://images.unsplash.com/photo-1494232410401-ad00d5433cfa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQzMzd8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 4, title: "Ho Hey", artist: "The Lumineers", album: "The Lumineers", duration: "2:43", audio_url: "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3", artwork: "https://images.unsplash.com/photo-1526478806334-55d443e5c7b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQzNjB8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 5, title: "Little Talks", artist: "Of Monsters and Men", album: "My Head Is an Animal", duration: "4:03", audio_url: "https://sample-videos.com/zip/10/mp3/SampleAudio_0.4mb_mp3.mp3", artwork: "https://images.unsplash.com/photo-1542623034-9e32d184752f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQzODF8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 6, title: "I Will Wait", artist: "Mumford & Sons", album: "Babel", duration: "4:36", audio_url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav", artwork: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ0MDd8&ixlib=rb-4.0.3&q=80&w=400" } ],
-    playlists: [ { id: 1, name: "Acoustic Chill", creator: "Ethan Blake", songs: [3, 4, 1], artwork: "https://images.unsplash.com/photo-1459411552784-0636829e3a68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ0NDZ8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 2, name: "Wanderlust Tracks", creator: "Olivia Carter", songs: [2, 4, 5, 6], artwork: "https://images.unsplash.com/photo-1506197603052-3cc9c3201bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ0Njl8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 3, name: "Workout Mix", creator: "User", songs: [2, 5, 6], artwork: "https://images.unsplash.com/photo-1542766788-a2f588f447ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ0OTV8&ixlib=rb-4.0.3&q=80&w=400" }, ],
+    playlists: [ { id: 1, name: "Acoustic Chill", creator: "Ethan Blake", songs: [3, 4, 1], artwork: "https://images.unsplash.com/photo-1459411552784-0636829e3a68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ0NDZ8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 2, name: "Wanderlust Tracks", creator: "Olivia Carter", songs: [2, 4, 5, 6], artwork: "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ0Njl8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 3, name: "Workout Mix", creator: "User", songs: [2, 5, 6], artwork: "https://images.unsplash.com/photo-1542766788-a2f588f447ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ0OTV8&ixlib=rb-4.0.3&q=80&w=400" }, ],
     artists: [ { id: 1, name: "The Cosmic Keys", genre: "Electronic", followers: 50000, artwork: "https://images.unsplash.com/photo-1582202283625-b890a18a93af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ1MjR8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 2, name: "The Lumineers", genre: "Indie Folk", followers: 2500000, artwork: "https://images.unsplash.com/photo-1517400508447-f8dd518b86db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ1NDZ8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 3, name: "Mumford & Sons", genre: "Indie Folk", followers: 4300000, artwork: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQ1NjZ8&ixlib=rb-4.0.3&q=80&w=400" }, ],
     albums: [ { id: 1, name: "Cosmic Collection", artist: "The Cosmic Keys", songs: [1], artwork: "https://images.unsplash.com/photo-1516223725307-6f76b9ec8742?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQyODJ8&ixlib=rb-4.0.3&q=80&w=400" }, { id: 2, name: "The Lumineers", artist: "The Lumineers", songs: [4], artwork: "https://images.unsplash.com/photo-1526478806334-55d443e5c7b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjg4NjQzNjB8&ixlib=rb-4.0.3&q=80&w=400" }, ],
     genres: ["Pop", "Hip Hop", "Rock", "Electronic", "R&B", "Indie", "Classical", "Jazz", "Country", "Metal"],
@@ -32,6 +32,7 @@ const AppProvider = ({ children }) => {
     const [isShuffling, setIsShuffling] = useState(false);
     const [repeatMode, setRepeatMode] = useState('none'); // 'none', 'one', 'all'
     const [queue, setQueue] = useState(data.songs.slice(1, 5));
+    const [playbackHistory, setPlaybackHistory] = useState([]);
     const audioRef = useRef(null);
 
     const navigate = (name, params = {}) => {
@@ -39,6 +40,7 @@ const AppProvider = ({ children }) => {
         setHistory(prev => [...prev, newScreen]);
         setScreen(newScreen);
     };
+
     const goBack = () => {
         if (history.length > 1) {
             const newHistory = history.slice(0, -1);
@@ -49,6 +51,9 @@ const AppProvider = ({ children }) => {
     
     const playSong = (song, songList = []) => {
         if (!song) return;
+        if (currentSong && currentSong.id !== song.id) {
+            setPlaybackHistory(prev => [currentSong, ...prev].slice(0, 20));
+        }
         setCurrentSong(song);
         setQueue(songList.filter(s => s.id !== song.id));
         setIsPlaying(true);
@@ -57,64 +62,62 @@ const AppProvider = ({ children }) => {
             audioRef.current.play().catch(console.error);
         }
     };
-    
+
     const togglePlay = () => {
-        if (!audioRef.current) return;
+        if (!currentSong || !audioRef.current) return;
         if (isPlaying) {
             audioRef.current.pause();
         } else {
             audioRef.current.play().catch(console.error);
         }
     };
-    
+
     const playNext = () => {
-        if (repeatMode === 'one') {
+        if (repeatMode === 'one' && currentSong) {
             audioRef.current.currentTime = 0;
             audioRef.current.play().catch(console.error);
             return;
         }
         
+        let upcomingQueue = [...queue];
         let nextSong;
-        if (isShuffling && queue.length > 0) {
-            const randomIndex = Math.floor(Math.random() * queue.length);
-            nextSong = queue[randomIndex];
-        } else if (queue.length > 0) {
-            nextSong = queue[0];
+
+        if (isShuffling && upcomingQueue.length > 0) {
+            const randomIndex = Math.floor(Math.random() * upcomingQueue.length);
+            nextSong = upcomingQueue.splice(randomIndex, 1)[0];
+        } else if (upcomingQueue.length > 0) {
+            nextSong = upcomingQueue.shift();
         }
         
+        if (repeatMode === 'all' && currentSong) {
+            upcomingQueue.push(currentSong);
+        }
+
         if (nextSong) {
-            let newQueue = [...queue];
-            if (repeatMode === 'all') {
-               newQueue.push(currentSong);
-            }
-            if (isShuffling) {
-                newQueue = newQueue.filter(s => s.id !== nextSong.id);
-            } else {
-                newQueue.shift();
-            }
-            playSong(nextSong, [nextSong, ...newQueue]);
-        } else if (repeatMode === 'all') {
-            // Restart from beginning when queue is empty in repeat all mode
-            playSong(data.songs[0], data.songs);
+            // Correctly pass the next song and the updated remainder of the queue
+            playSong(nextSong, [nextSong, ...upcomingQueue]);
         } else {
             setIsPlaying(false);
         }
     };
-    
+
     const playPrevious = () => {
-        // If more than 3 seconds into song, restart it. Otherwise go to previous.
         if (currentTime > 3) {
             audioRef.current.currentTime = 0;
         } else {
-            // Find current song index and play previous
-            const allSongs = [currentSong, ...queue];
-            const currentIndex = 0; // Current song is always first
-            if (currentIndex > 0) {
-                playSong(allSongs[currentIndex - 1], allSongs);
-            } else {
-                // Go to last song in queue
-                if (queue.length > 0) {
-                    playSong(queue[queue.length - 1], data.songs);
+            if (playbackHistory.length > 0) {
+                const lastSong = playbackHistory[0];
+                const newHistory = playbackHistory.slice(1);
+                
+                const newQueue = currentSong ? [currentSong, ...queue] : [...queue];
+
+                setPlaybackHistory(newHistory);
+                setCurrentSong(lastSong);
+                setQueue(newQueue);
+
+                if(audioRef.current) {
+                    audioRef.current.src = lastSong.audio_url;
+                    audioRef.current.play().catch(console.error);
                 }
             }
         }
@@ -126,42 +129,12 @@ const AppProvider = ({ children }) => {
         }
     };
 
-    const value = { 
-        data, 
-        screen, 
-        navigate, 
-        goBack, 
-        currentSong, 
-        isPlaying, 
-        currentTime, 
-        duration, 
-        volume, 
-        queue, 
-        audioRef, 
-        playSong, 
-        togglePlay, 
-        playNext, 
-        playPrevious,
-        seekTo, 
-        setVolume, 
-        isShuffling, 
-        setIsShuffling, 
-        repeatMode, 
-        setRepeatMode, 
-        setQueue 
-    };
+    const value = { data, screen, navigate, goBack, currentSong, isPlaying, currentTime, duration, volume, queue, audioRef, playSong, togglePlay, playNext, playPrevious, seekTo, setVolume, isShuffling, setIsShuffling, repeatMode, setRepeatMode, setQueue };
 
     return (
         <AppContext.Provider value={value}>
             {children}
-            <audio 
-                ref={audioRef} 
-                onTimeUpdate={e => setCurrentTime(e.target.currentTime)} 
-                onLoadedMetadata={e => setDuration(e.target.duration)} 
-                onPlay={() => setIsPlaying(true)} 
-                onPause={() => setIsPlaying(false)} 
-                onEnded={playNext}
-            />
+            <audio ref={audioRef} onTimeUpdate={e => setCurrentTime(e.target.currentTime)} onLoadedMetadata={e => setDuration(e.target.duration)} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={playNext} />
         </AppContext.Provider>
     );
 };
@@ -273,8 +246,8 @@ const AudioPlayerBar = () => {
 // --- FULL-SCREEN COMPONENTS (SCREENS) ---
 
 const QueueModal = ({ onClose }) => {
-     const { currentSong, queue, playSong } = useContext(AppContext);
-     return (
+    const { currentSong, queue, playSong } = useContext(AppContext);
+    return (
         <div className="queue-modal">
             <div className="queue-modal__header">
                  <button className="icon-btn" onClick={onClose}><i className="fa-solid fa-chevron-down"></i></button>
@@ -283,7 +256,7 @@ const QueueModal = ({ onClose }) => {
             </div>
             <div className="queue-modal__content">
                  <h4 className="section-title" style={{marginTop: 0}}>Now Playing</h4>
-                 <SongItem song={currentSong} showArtwork={true} onPlay={() => {}} />
+                 <SongItem song={currentSong} showArtwork={true} />
                  <h4 className="section-title">Next in Queue</h4>
                  {queue.length > 0 ? (
                     queue.map(song => <SongItem key={song.id} song={song} showArtwork={true} onPlay={() => playSong(song, queue)} />)
@@ -292,7 +265,7 @@ const QueueModal = ({ onClose }) => {
                  )}
             </div>
         </div>
-     );
+    );
 };
 
 const NowPlayingScreen = () => {
@@ -300,7 +273,6 @@ const NowPlayingScreen = () => {
     const [showVolume, setShowVolume] = useState(false);
     const [showQueue, setShowQueue] = useState(false);
     
-    // Sync volume with audio element
     useVolumeEffect(audioRef, volume);
     
     const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -322,6 +294,11 @@ const NowPlayingScreen = () => {
 
     if (showQueue) {
         return <QueueModal onClose={() => setShowQueue(false)} />;
+    }
+
+    if (!currentSong) {
+        goBack();
+        return null;
     }
 
     return (
@@ -363,7 +340,7 @@ const NowPlayingScreen = () => {
                 </div>
                 <div className="now-playing-screen__bottom-actions">
                     <button className="icon-btn"><i className="fa-solid fa-share-nodes"></i></button>
-                     {showVolume && <div className="volume-control">
+                    {showVolume && <div className="volume-control">
                         <i className="fa-solid fa-volume-low"></i>
                         <input 
                             type="range" 
@@ -374,7 +351,7 @@ const NowPlayingScreen = () => {
                             onChange={e => setVolume(parseFloat(e.target.value))} 
                         />
                         <i className="fa-solid fa-volume-high"></i>
-                     </div>}
+                    </div>}
                     <button className="icon-btn" onClick={() => setShowVolume(!showVolume)}>
                         <i className="fa-solid fa-volume-high"></i>
                     </button>
@@ -388,7 +365,7 @@ const NowPlayingScreen = () => {
 };
 
 const HomeScreen = () => {
-    const { data, playSong } = useContext(AppContext);
+    const { data } = useContext(AppContext);
     return (
         <div className="screen">
             <header className="app-header">
@@ -398,7 +375,7 @@ const HomeScreen = () => {
             
             <h2 className="section-title">Recently Played</h2>
             <div className="horizontal-scroll">
-                {data.songs.map(song => <AlbumCard key={song.id} album={{...song, name: song.title}} />)}
+                {data.songs.map(song => <AlbumCard key={song.id} album={{...song, id: song.id, name: song.title}} />)}
             </div>
 
             <h2 className="section-title">Your Playlists</h2>
@@ -479,8 +456,8 @@ const SearchScreen = () => {
 };
 
 const LibraryScreen = () => {
-    const { data, playSong, navigate } = useContext(AppContext);
-    const [view, setView] = useState('grid');
+    const { data, navigate } = useContext(AppContext);
+    const [view, setView] = useState('list');
     const [tab, setTab] = useState('playlists');
 
     return (
@@ -654,18 +631,19 @@ const App = () => {
             case 'playlist': return <DetailsScreen type="playlist" id={screen.params.id} />;
             case 'album': return <DetailsScreen type="album" id={screen.params.id} />;
             case 'artist': return <ArtistScreen id={screen.params.id} />;
-            case 'nowplaying': return <NowPlayingScreen />;
+            case 'nowplaying': return <NowPlayingScreen />; // This will be handled by the main return
             default: return <HomeScreen />;
         }
     };
     
-    const showPlayer = screen.name !== 'nowplaying';
+    const showMainUI = screen.name !== 'nowplaying';
 
     return (
         <div className="app">
-            {renderScreen()}
-            {showPlayer && <AudioPlayerBar />}
-            {showPlayer && <BottomNav />}
+            {showMainUI && renderScreen()}
+            {showMainUI && <AudioPlayerBar />}
+            {showMainUI && <BottomNav />}
+            {screen.name === 'nowplaying' && <NowPlayingScreen />}
         </div>
     );
 };
